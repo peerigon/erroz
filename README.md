@@ -20,7 +20,8 @@ var DuplicateError = erroz({
 throw new DuplicateError("User", 1);
 ```
 
->/example/example.js:33
+```
+/example/example.js:33
  throw new DuplicateError("User", 1);
        ^
  Duplicate: 'User' with id '1' already exists.
@@ -32,6 +33,7 @@ throw new DuplicateError("User", 1);
      at Function.Module.runMain (module.js:497:10)
      at startup (node.js:119:16)
      at node.js:902:3
+```
 
 ### Predefined Errors
 
