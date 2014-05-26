@@ -1,0 +1,29 @@
+{
+  "name": "erroz",
+  "version": "0.0.1",
+  "description": "Abstract error-factory ",
+  "main": "lib/index.js",
+  "directories": {
+    "example": "example"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/peerigon/erroz.git"
+  },
+  "keywords": [
+    "error",
+    "stack",
+    "abstract",
+    "api",
+    "http"
+  ],
+  "author": "peerigon <developer@peerigon.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/peerigon/erroz/issues"
+  },
+  "homepage": "https://github.com/peerigon/erroz"
+}
