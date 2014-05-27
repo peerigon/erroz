@@ -28,7 +28,7 @@ http.createServer(function (req, res) {
             resource: "User",
             id: 1,
             stack: "NotFound: User (1) not found at Server.<anonymous>
-                    (/erroz/example/httpError.js:16:15)
+                    (/erroz/examples/httpError.js:16:15)
                     at Server.EventEmitter.emit (events.js:98:17)
                     at HTTPParser.parser.onIncoming (http.js:2108:12)
                     at HTTPParser.parserOnHeadersComplete [as onHeadersComplete] (http.js:121:23)

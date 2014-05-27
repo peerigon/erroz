@@ -2,21 +2,21 @@
 
 var erroz = require("../lib/index.js");
 
-var NotFoundError = erroz({
-    name: "NotFound",
-    code: "not-found",
+var DuplicateError = erroz({
+    name: "Duplicate",
+    code: "duplicate",
     status: "fail",
-    statusCode: 404,
-    template: "<%= resource %> (<%= id %>) not found"
+    statusCode: 409,
+    message: "Resource already exists"
 });
 
-throw new NotFoundError({ resource: "User", id: 1 });
+throw new DuplicateError();
 
 /*
- throw new NotFoundError({ resource: "User", id: 1 });
+ throw new DuplicateError();
  ^
- NotFound: User (1) not found
- at Object.<anonymous> (/erroz/example/templatedErrorMessage.js:14:7)
+ Duplicate: Resource already exists
+ at Object.<anonymous> (/erroz/examples/staticErrorMessage.js:14:7)
  at Module._compile (module.js:456:26)
  at Object.Module._extensions..js (module.js:474:10)
  at Module.load (module.js:356:32)

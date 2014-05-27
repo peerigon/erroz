@@ -2,19 +2,12 @@
 
 var erroz = require("../lib/index.js");
 
-erroz.options.renderMessage = function(template, data) {
-    template = template.replace("%resource", data.resource);
-    template = template.replace("%id", data.id);
-
-    return "Something went wrong... " + template;
-};
-
 var NotFoundError = erroz({
     name: "NotFound",
     code: "not-found",
     status: "fail",
     statusCode: 404,
-    template: "%resource (%id) not found"
+    template: "<%= resource %> (<%= id %>) not found"
 });
 
 throw new NotFoundError({ resource: "User", id: 1 });
@@ -22,8 +15,8 @@ throw new NotFoundError({ resource: "User", id: 1 });
 /*
  throw new NotFoundError({ resource: "User", id: 1 });
  ^
- NotFound: Something went wrong... User (1) not found
- at Object.<anonymous> (/erroz/example/customTemplateRenderer.js:20:7)
+ NotFound: User (1) not found
+ at Object.<anonymous> (/erroz/examples/templatedErrorMessage.js:14:7)
  at Module._compile (module.js:456:26)
  at Object.Module._extensions..js (module.js:474:10)
  at Module.load (module.js:356:32)
