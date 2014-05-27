@@ -25,8 +25,5 @@
   "bugs": {
     "url": "https://github.com/peerigon/erroz/issues"
   },
-  "homepage": "https://github.com/peerigon/erroz",
-  "dependencies": {
-    "underscore": "1.6.x"
-  }
+  "homepage": "https://github.com/peerigon/erroz"
 }

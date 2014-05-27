@@ -7,7 +7,7 @@ var NotFoundError = erroz({
     code: "not-found",
     status: "fail",
     statusCode: 404,
-    template: "<%= resource %> (<%= id %>) not found"
+    template: "%resource (%id) not found"
 });
 
 throw new NotFoundError({ resource: "User", id: 1 });
