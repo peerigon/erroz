@@ -1,6 +1,6 @@
 {
   "name": "erroz",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Abstract error-factory ",
   "main": "lib/index.js",
   "directories": {
@@ -25,5 +25,8 @@
   "bugs": {
     "url": "https://github.com/peerigon/erroz/issues"
   },
-  "homepage": "https://github.com/peerigon/erroz"
+  "homepage": "https://github.com/peerigon/erroz",
+  "dependencies": {
+    "underscore": "1.6.x"
+  }
 }
