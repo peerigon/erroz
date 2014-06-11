@@ -2,7 +2,7 @@
 
 Erroz ramazotti the way you like it.
 
-Create abstract errors which render speaking error-messages and contain useful meta-data like http-status-codes to be used for your api-happiness.
+Create abstract errors which render speaking error-messages.
 
 ### Usage
 

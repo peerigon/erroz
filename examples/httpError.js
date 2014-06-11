@@ -15,7 +15,7 @@ http.createServer(function (req, res) {
 
     var err = new NotFoundError({ resource: "User", id: 1 });
 
-    res.writeHead(err.statusCode, {"Content-Type": "text/plain"});
+    res.writeHead(err.statusCode, {"Content-Type": "application/json"});
 
     res.end(JSON.stringify(err));
     //returns jsend-style JSON

@@ -1,6 +1,6 @@
 {
   "name": "erroz",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Abstract error-factory ",
   "main": "lib/index.js",
   "directories": {
@@ -20,7 +20,7 @@
     "api",
     "http"
   ],
-  "author": "peerigon <developer@peerigon.com>",
+  "author": "peerigon <developers@peerigon.com>",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/peerigon/erroz/issues"
