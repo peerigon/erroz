@@ -78,7 +78,7 @@ describe("erroz", function () {
     describe("#toJSend", function() {
 
         it("should expose only JSend compatible keys", function() {
-            console.log(err.toJSend());
+            expect(err.toJSend()).to.have.keys(["status", "message", "code", "data"]);
         });
 
     });
