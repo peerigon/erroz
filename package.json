@@ -1,13 +1,13 @@
 {
   "name": "erroz",
-  "version": "0.1.2",
-  "description": "Abstract error-factory ",
+  "version": "1.0.0",
+  "description": "Create abstract errors with meta-data, stack-traces and speaking error-messages",
   "main": "lib/index.js",
   "directories": {
     "example": "examples"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": " ./node_modules/.bin/mocha"
   },
   "repository": {
     "type": "git",
@@ -25,5 +25,9 @@
   "bugs": {
     "url": "https://github.com/peerigon/erroz/issues"
   },
-  "homepage": "https://github.com/peerigon/erroz"
+  "homepage": "https://github.com/peerigon/erroz",
+  "devDependencies": {
+    "chai": "^1.9.2",
+    "mocha": "^2.0.1"
+  }
 }

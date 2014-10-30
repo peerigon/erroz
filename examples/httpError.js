@@ -17,7 +17,7 @@ http.createServer(function (req, res) {
 
     res.writeHead(err.statusCode, {"Content-Type": "application/json"});
 
-    res.end(JSON.stringify(err));
+    res.end(JSON.stringify(err.toJSend()));
     //returns jsend-style JSON
     /*
      {
