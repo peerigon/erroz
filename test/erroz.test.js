@@ -63,6 +63,59 @@ describe("erroz", function () {
 
     });
 
+    describe("template rendering", function() {
+
+        it("should use message if defined", function() {
+
+            var error = {
+                message: "blub",
+                template: "yeha"
+            },
+                CustomError = erroz(error);
+
+            err = new CustomError();
+
+            expect(err.message).to.eql(error.message);
+        });
+
+        it("should use template if defined and render with data", function() {
+
+            var error = {
+                    template: "yeha %fur"
+                },
+                CustomError = erroz(error);
+
+            err = new CustomError({
+                fur: "fluffy"
+            });
+
+            expect(err.message).to.eql("yeha fluffy");
+        });
+
+        it("should use template if defined and accept data to be undefined", function() {
+
+            var error = {
+                    template: "yeha %fur"
+                },
+                CustomError = erroz(error);
+
+            err = new CustomError();
+
+            expect(err.message).to.eql("yeha undefined");
+        });
+
+        it("should not throw if neither template nor message are defined", function() {
+            var error = {
+                    code: "too-fluffy"
+                },
+                CustomError = erroz(error);
+
+            err = new CustomError();
+
+            expect(err.code).to.eql(error.code);
+        });
+    });
+
     describe("#toJSON", function () {
 
         it("should contain all custom properties", function () {
