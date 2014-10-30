@@ -1,13 +1,13 @@
 {
   "name": "erroz",
-  "version": "0.2.0",
-  "description": "Abstract error-factory ",
+  "version": "0.2.1",
+  "description": "Create abstract errors with meta-data, stack-traces and speaking error-messages",
   "main": "lib/index.js",
   "directories": {
     "example": "examples"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": " ./node_modules/.bin/mocha"
   },
   "repository": {
     "type": "git",
