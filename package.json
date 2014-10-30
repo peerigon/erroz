@@ -1,6 +1,6 @@
 {
   "name": "erroz",
-  "version": "0.2.1",
+  "version": "1.0.0",
   "description": "Create abstract errors with meta-data, stack-traces and speaking error-messages",
   "main": "lib/index.js",
   "directories": {
