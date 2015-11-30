@@ -190,55 +190,55 @@ err.toJSend();
 
 
 
- ## Options 
+## Options 
 
- __renderMessage__ 
+__renderMessage__ 
 
- A custom template renderer in the form
+A custom template renderer in the form
 
- ```javascript 
- erroz.options.renderMessage = function(data, template) { 
- 	return "Ooops"; 
- }
- ```
+```javascript 
+erroz.options.renderMessage = function(data, template) { 
+    return "Ooops"; 
+}
+```
 
- __includeStack__
+__includeStack__
 
- Should the stack be included in errors? Defaults to true. 
- Consider turning that off in production and send it to your logger instead. 
+Should the stack be included in errors? Defaults to true. 
+Consider turning that off in production and send it to your logger instead. 
 
- ```javascript 
- erroz.options.includeStack = false;
- ```
+```javascript 
+erroz.options.includeStack = false;
+```
 
- ## Pro Tip: Using with erroz with connect/express error handlers
+## Pro Tip: Using with erroz with connect/express error handlers
 
- _PRO TIP_: Define a global error handler which does to `toJSend()` call and some logging. So you can simply `next` your errors in your route-handlers 
+_PRO TIP_: Define a global error handler which does to `toJSend()` call and some logging. So you can simply `next` your errors in your route-handlers 
 
- ```javascript
- function myAwesomeRoute(req, res, next) {
+```javascript
+function myAwesomeRoute(req, res, next) {
     if(!req.awesome) {
-       next(new NotAwesomeError()); 
-       return; 
+        next(new NotAwesomeError()); 
+        return; 
     }
-    
-    next();
- }	
- ```
 
- ```javascript
- app.use(function errozHandler(err, req, res, next) {
+    next();
+}	
+```
+
+```javascript
+app.use(function errozHandler(err, req, res, next) {
  	
- 	if(err instanceof errorz.Erroz) {
-       res.status(err.statusCode).send(err.toJSend()); 
-       return; 
- 	} 
+    if(err instanceof errorz.Erroz) {
+        res.status(err.statusCode).send(err.toJSend()); 
+        return; 
+    } 
  	
- 	//pass on all non-erroz errors
- 	next(err);
+    //pass on all non-erroz errors
+    next(err);
 });
  ```
 
- ## Licence 
+## Licence 
 
- Unlicense
+Unlicense
