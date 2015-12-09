@@ -153,7 +153,7 @@ JSON.stringify(err);
 
 __Custom JSON format__ 
 
-By defining a `toJSON` function on erroz` Erroz you can customize the JSON-format.
+By defining a `toJSON` function on AbstractError you can customize the JSON format.
 
 ```javascript
 //provide a custom `toJSON` method for all inherited errors
@@ -211,7 +211,7 @@ err.toJSend();
  erroz.options.includeStack = false;
  ```
 
- ## Pro Tip: Using with erroz with connect/express error handlers
+ ## Pro Tip: Using erroz with connect/express error handlers
 
  _PRO TIP_: Define a global error handler which does to `toJSend()` call and some logging. So you can simply `next` your errors in your route-handlers 
 
@@ -229,7 +229,7 @@ err.toJSend();
  ```javascript
  app.use(function errozHandler(err, req, res, next) {
  	
- 	if(err instanceof errorz.Erroz) {
+ 	if(err instanceof errorz.AbstractError) {
        res.status(err.statusCode).send(err.toJSend()); 
        return; 
  	} 

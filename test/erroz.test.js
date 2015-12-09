@@ -4,20 +4,18 @@ var chai = require("chai"),
     expect = chai.expect;
 
 var erroz = require("../lib/");
-var Erroz = require("../lib/Erroz");
+var AbstractError = require("../lib/AbstractError");
 
 function stringifyAndParse(obj) {
     return JSON.parse(JSON.stringify(obj));
 }
 
 describe("erroz", function () {
-
     var CustomError,
         errProperties,
         err;
 
     beforeEach(function () {
-
         errProperties = {
             goodError: true,
             badError: false,
@@ -38,7 +36,6 @@ describe("erroz", function () {
         });
 
         it("should be able to modify attributes via instance", function () {
-
             var obj;
             err = new CustomError();
 
@@ -62,7 +59,6 @@ describe("erroz", function () {
             expect(err.statusCode).to.eql(404);
             expect(obj.statusCode).to.eql(404);
         });
-
     });
 
     describe("template rendering", function () {
@@ -119,7 +115,6 @@ describe("erroz", function () {
         });
 
         it("should use a given string as message", function () {
-
             var error = {
                 code: "too-fluffy"
             };
@@ -133,7 +128,6 @@ describe("erroz", function () {
         });
 
         it("should overwrite the default message if an error message as string was passed", function () {
-
             var error = {
                 code: "too-fluffy",
                 message: "Sooo fluffy"
@@ -157,7 +151,6 @@ describe("erroz", function () {
 
             expect(errObj).to.include.keys(Object.keys(errProperties));
         });
-
     });
 
     describe("#toJSend", function () {
@@ -165,6 +158,5 @@ describe("erroz", function () {
         it("should expose only JSend compatible keys", function () {
             expect(err.toJSend()).to.have.keys(["status", "message", "code", "data"]);
         });
-
     });
 });
