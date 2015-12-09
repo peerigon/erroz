@@ -189,12 +189,11 @@ err.toJSend();
 ```
 
 
-
 ## Options 
 
 __renderMessage__ 
 
-A custom template renderer in the form
+Define a custom error renderer. 
 
 ```javascript 
 erroz.options.renderMessage = function(data, template) { 
@@ -211,34 +210,35 @@ Consider turning that off in production and send it to your logger instead.
 erroz.options.includeStack = false;
 ```
 
- ## Pro Tip: Using erroz with connect/express error handlers
+## Pro Tip: Using erroz with connect/express error handlers
 
- _PRO TIP_: Define a global error handler which does to `toJSend()` call and some logging. So you can simply `next` your errors in your route-handlers 
+Define a global error handler which calls `toJSend()` if the error is instance of `erroz.AbstractError`. 
+So you can simply `next` all your errors in your route-handlers.  
 
- ```javascript
- function myAwesomeRoute(req, res, next) {
+```javascript
+function myAwesomeRoute(req, res, next) {
     if(!req.awesome) {
-       next(new NotAwesomeError()); 
-       return; 
+        next(new NotAwesomeError()); 
+        return; 
     }
-    
-    next();
- }	
- ```
 
- ```javascript
- app.use(function errozHandler(err, req, res, next) {
- 	
- 	if(err instanceof errorz.AbstractError) {
+    next();
+}	
+```
+
+```javascript
+app.use(function errozHandler(err, req, res, next) {
+    
+    if(err instanceof errorz.AbstractError) {
        res.status(err.statusCode).send(err.toJSend()); 
        return; 
- 	} 
- 	
- 	//pass on all non-erroz errors
- 	next(err);
+    } 
+
+    //pass on all non-erroz errors
+    next(err);
 });
- ```
+```
 
- ## Licence 
+## Licence 
 
- Unlicense
+Unlicense
