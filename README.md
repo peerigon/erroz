@@ -190,26 +190,26 @@ err.toJSend();
 
 
 
- ## Options 
+## Options 
 
- __renderMessage__ 
+__renderMessage__ 
 
- A custom template renderer in the form
+A custom template renderer in the form
 
- ```javascript 
- erroz.options.renderMessage = function(data, template) { 
- 	return "Ooops"; 
- }
- ```
+```javascript 
+erroz.options.renderMessage = function(data, template) { 
+    return "Ooops"; 
+}
+```
 
- __includeStack__
+__includeStack__
 
- Should the stack be included in errors? Defaults to true. 
- Consider turning that off in production and send it to your logger instead. 
+Should the stack be included in errors? Defaults to true. 
+Consider turning that off in production and send it to your logger instead. 
 
- ```javascript 
- erroz.options.includeStack = false;
- ```
+```javascript 
+erroz.options.includeStack = false;
+```
 
  ## Pro Tip: Using erroz with connect/express error handlers
 
