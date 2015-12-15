@@ -4,22 +4,22 @@ var chai = require("chai"),
     expect = chai.expect;
 
 var erroz = require("../lib/");
+var AbstractError = require("../lib/AbstractError");
 
 function stringifyAndParse(obj) {
     return JSON.parse(JSON.stringify(obj));
 }
 
 describe("erroz", function () {
-
     var CustomError,
         errProperties,
         err;
 
     beforeEach(function () {
-
         errProperties = {
             goodError: true,
             badError: false,
+            code: "blub",
             status: "fail",
             statusCode: 418,
             message: "I'm a teapot"
@@ -35,8 +35,7 @@ describe("erroz", function () {
             expect(err).to.include.keys(Object.keys(errProperties));
         });
 
-        it("should be able to modify attributes via instance", function() {
-
+        it("should be able to modify attributes via instance", function () {
             var obj;
             err = new CustomError();
 
@@ -48,7 +47,7 @@ describe("erroz", function () {
             expect(obj.statusCode).to.eql(200);
         });
 
-        it("should be able to modify attributes via prototype", function() {
+        it("should be able to modify attributes via prototype", function () {
             var obj;
 
             CustomError.prototype.statusCode = 404;
@@ -60,30 +59,29 @@ describe("erroz", function () {
             expect(err.statusCode).to.eql(404);
             expect(obj.statusCode).to.eql(404);
         });
-
     });
 
-    describe("template rendering", function() {
+    describe("template rendering", function () {
 
-        it("should use message if defined", function() {
-
+        it("should use message if defined", function () {
             var error = {
                 message: "blub",
                 template: "yeha"
-            },
-                CustomError = erroz(error);
+            };
+
+            CustomError = erroz(error);
 
             err = new CustomError();
 
             expect(err.message).to.eql(error.message);
         });
 
-        it("should use template if defined and render with data", function() {
-
+        it("should use template if defined and render with data", function () {
             var error = {
-                    template: "yeha %fur"
-                },
-                CustomError = erroz(error);
+                template: "yeha %fur"
+            };
+
+            CustomError = erroz(error);
 
             err = new CustomError({
                 fur: "fluffy"
@@ -92,27 +90,55 @@ describe("erroz", function () {
             expect(err.message).to.eql("yeha fluffy");
         });
 
-        it("should use template if defined and accept data to be undefined", function() {
-
+        it("should use template if defined and accept data to be undefined", function () {
             var error = {
-                    template: "yeha %fur"
-                },
-                CustomError = erroz(error);
+                template: "yeha %fur"
+            };
+
+            CustomError = erroz(error);
 
             err = new CustomError();
 
             expect(err.message).to.eql("yeha undefined");
         });
 
-        it("should not throw if neither template nor message are defined", function() {
+        it("should not throw if neither template nor message are defined", function () {
             var error = {
-                    code: "too-fluffy"
-                },
-                CustomError = erroz(error);
+                code: "too-fluffy"
+            };
+
+            CustomError = erroz(error);
 
             err = new CustomError();
 
             expect(err.code).to.eql(error.code);
+        });
+
+        it("should use a given string as message", function () {
+            var error = {
+                code: "too-fluffy"
+            };
+
+            CustomError = erroz(error);
+
+            err = new CustomError("Not my fault");
+
+            expect(err.code).to.eql(error.code);
+            expect(err.message).to.eql("Not my fault");
+        });
+
+        it("should overwrite the default message if an error message as string was passed", function () {
+            var error = {
+                code: "too-fluffy",
+                message: "Sooo fluffy"
+            };
+
+            CustomError = erroz(error);
+
+            err = new CustomError("Not my fault");
+
+            expect(err.code).to.eql(error.code);
+            expect(err.message).to.eql("Not my fault");
         });
     });
 
@@ -125,14 +151,12 @@ describe("erroz", function () {
 
             expect(errObj).to.include.keys(Object.keys(errProperties));
         });
-
     });
 
-    describe("#toJSend", function() {
+    describe("#toJSend", function () {
 
-        it("should expose only JSend compatible keys", function() {
+        it("should expose only JSend compatible keys", function () {
             expect(err.toJSend()).to.have.keys(["status", "message", "code", "data"]);
         });
-
     });
 });
