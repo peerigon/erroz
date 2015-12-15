@@ -1,13 +1,12 @@
 # erroz
 
+Descriptive errors through metadata
+
 [![Build Status](https://travis-ci.org/peerigon/erroz.svg?branch=master)](https://travis-ci.org/peerigon/erroz)
 [![](https://img.shields.io/npm/v/erroz.svg)](https://www.npmjs.com/package/erroz)
 [![](https://img.shields.io/npm/dm/erroz.svg)](https://www.npmjs.com/package/erroz)
 
-*Short description of what it is*
-
-*This should be a longer description*
-Defining and handling errors can be quite complicated! Stop parsing error messages and append meta data like a pro
+Typical strategies of parsing errors are fragile and couple code to the error messages. By defining error objects consistently, working with errors becomes predictable and efficient.
 
 ## Features
 
@@ -64,7 +63,7 @@ var NotFoundError = erroz(errorDefinition);
 
 ### errorDefinition _object_
 
-__erroz__ takes just one parameter - the error definition object. arbitrary data structures for meta data which will be available on every error instance. Some attributes have a special meaning which is why they are described below: 
+Arbitrary data structure for metadata which will be available on every error instance. Some attributes have a special meaning which is why they are described below: 
 
 #### `name` _string_
 
@@ -104,7 +103,7 @@ A message to override `errorDefinition.message` or `errorDefinition.template`. U
 
 ## JSON
 
-You can simply convert your errors to `JSON`. 
+Errors can be converted to JSON with `JSON.stringify()`. 
 
 ```javascript 
 var err = new DuplicateError({ resource: "Unicorn", id: 1 });
@@ -128,7 +127,7 @@ console.log(JSON.stringify(err));
 
 __Custom JSON format__ 
 
-By defining a `toJSON` function on AbstractError you can customize the JSON format.
+The `AbstractError.toJSON` method can be defined to customize the JSON format.
 
 ```javascript
 // Set a custom `toJSON` method for all errors
@@ -150,7 +149,7 @@ console.log(JSON.stringify(err));
  
 ### `error.toJSend()`
 
-By calling `toJSend()` you can convert your error to a JSend style object.
+Converts the error to a JSend-style object.
  
 ```javascript
 var err = new DuplicateError({ resource: "Unicorn", id: 1 });
@@ -185,12 +184,13 @@ erroz.options.renderMessage = function(data, template) {
 
 ### includeStack _boolean_
 
-Should the stack be included in errors? Default is true.
-Consider turning this off in production and sending it to your logger instead.
+Whether the stack should be included in errors. Default is true.
 
 ```javascript 
 erroz.options.includeStack = false;
 ```
+
+Consider turning this off in production and sending it to a logger instead.
 
 ## Pro Tip: Using erroz with Connect / Express error handlers
 
