@@ -155,8 +155,58 @@ describe("erroz", function () {
 
     describe("#toJSend", function () {
 
+        function jSendError(defintion, data) {
+            CustomError = new erroz(defintion);
+
+            return new CustomError(data).toJSend();
+        }
+
+
         it("should expose only JSend compatible keys", function () {
             expect(err.toJSend()).to.have.keys(["status", "message", "code", "data"]);
+        });
+
+        it("should return status = 'success' if statusCode is 2xx", function() {
+            let res = jSendError({
+                statusCode: 201
+            }, {});
+
+            expect(res.status).to.eql("success");
+        });
+
+        it("should return status = 'fail' if statusCode is 4xx", function() {
+            let res = jSendError({
+                statusCode: 404
+            }, {});
+
+            expect(res.status).to.eql("fail");
+        });
+
+        it("should return status = 'error' if statusCode is 5xx", function() {
+            let res = jSendError({
+                statusCode: 500
+            }, {});
+
+            expect(res.status).to.eql("error");
+        });
+
+        it("should not overwrite a given status", function() {
+            let res = jSendError({
+                statusCode: 500,
+                status: "success"
+            }, {});
+
+            expect(res.status).to.eql("success");
+
+        });
+
+        it("should set status = 'error' if the statusCode is not a valid for jSend", function() {
+            let res = jSendError({
+                statusCode: 301
+            }, {});
+
+            expect(res.status).to.eql("error");
+
         });
     });
 });
