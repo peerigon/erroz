@@ -2,10 +2,10 @@ language: node_js
 node_js:
   - "0.10"
   - "0.12"
-  - "4.0.x"
-  - "4.1.x"
+  - "4.2"
+  - "4.1"
+  - "4.0"
   - "stable"
-  - "node"
   - "iojs"
 
 script:
