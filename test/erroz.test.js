@@ -167,7 +167,7 @@ describe("erroz", function () {
         });
 
         it("should return status = 'success' if statusCode is 2xx", function() {
-            let res = jSendError({
+            var res = jSendError({
                 statusCode: 201
             }, {});
 
@@ -175,7 +175,7 @@ describe("erroz", function () {
         });
 
         it("should return status = 'fail' if statusCode is 4xx", function() {
-            let res = jSendError({
+            var res = jSendError({
                 statusCode: 404
             }, {});
 
@@ -183,7 +183,7 @@ describe("erroz", function () {
         });
 
         it("should return status = 'error' if statusCode is 5xx", function() {
-            let res = jSendError({
+            var res = jSendError({
                 statusCode: 500
             }, {});
 
@@ -191,7 +191,7 @@ describe("erroz", function () {
         });
 
         it("should not overwrite a given status", function() {
-            let res = jSendError({
+            var res = jSendError({
                 statusCode: 500,
                 status: "success"
             }, {});
@@ -201,7 +201,7 @@ describe("erroz", function () {
         });
 
         it("should set status = 'error' if the statusCode is not a valid for jSend", function() {
-            let res = jSendError({
+            var res = jSendError({
                 statusCode: 301
             }, {});
 
