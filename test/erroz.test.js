@@ -201,12 +201,11 @@ describe("erroz", function () {
         });
 
         it("should throw an error if the statusCode is not valid for jSend", function() {
-
-            throw expect(function () {
+            expect(function () {
                 jSendError({
                     statusCode: 301
                 }, {});
-            }).to.throwError;
+            }).to.throw(Error);
 
         });
     });
