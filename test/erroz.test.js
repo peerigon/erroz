@@ -155,8 +155,8 @@ describe("erroz", function () {
 
     describe("#toJSend", function () {
 
-        function jSendError(defintion, data) {
-            CustomError = new erroz(defintion);
+        function jSendError(definition, data) {
+            CustomError = new erroz(definition);
 
             return new CustomError(data).toJSend();
         }
@@ -200,12 +200,13 @@ describe("erroz", function () {
 
         });
 
-        it("should set status = 'error' if the statusCode is not a valid for jSend", function() {
-            var res = jSendError({
-                statusCode: 301
-            }, {});
+        it("should throw an error if the statusCode is not valid for jSend", function() {
 
-            expect(res.status).to.eql("error");
+            throw expect(function () {
+                jSendError({
+                    statusCode: 301
+                }, {});
+            }).to.throwError;
 
         });
     });
