@@ -150,9 +150,11 @@ console.log(JSON.stringify(err));
 ### `error.toJSend()`
 
 Converts the error to a JSend-style object.
+The JSend `status` attribute is derived from the statusCode if not passed explicitly. Valid codes are 4xx and 5xx. 
+In case of an invalid statusCode, `.toJSend()` will throw an error. 
  
 ```javascript
-var err = new DuplicateError({ resource: "Unicorn", id: 1 });
+var err = new DuplicateError({ resource: "Unicorn", id: 1, status: 409 });
 
 err.toJSend();
 
