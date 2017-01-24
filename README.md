@@ -212,7 +212,7 @@ function myAwesomeRoute(req, res, next) {
 
 ```javascript
 app.use(function errozHandler(err, req, res, next) {
-    if (err instanceof errorz.AbstractError) {
+    if (err instanceof erroz.AbstractError) {
         res.status(err.statusCode).send(err.toJSend()); 
         return; 
     } 
