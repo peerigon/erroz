@@ -1,33 +1,47 @@
 {
   "name": "erroz",
-  "version": "1.1.0",
-  "description": "Create abstract errors with meta-data, stack-traces and speaking error-messages",
-  "main": "lib/index.js",
-  "directories": {
-    "example": "examples"
-  },
+  "version": "2.0.0",
+  "description": "Better errors through message templates, error codes, default HTTP status codes, you name it.",
+  "main": "./dist/main.js",
   "scripts": {
-    "test": "mocha"
+    "build": "run-s build:cleanup build:typescript",
+    "build:typescript": "tsc --outDir dist",
+    "build:cleanup": "rimraf dist",
+    "lint": "eslint ./src --ext js,ts,tsx",
+    "test": "jest",
+    "posttest": "run-p lint"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@types/jest": "^24.0.6",
+    "@types/node": "^11.9.4",
+    "@typescript-eslint/eslint-plugin": "^1.4.0",
+    "eslint": "^5.14.1",
+    "eslint-config-peerigon": "^17.1.0",
+    "eslint-import-resolver-typescript": "^1.1.1",
+    "eslint-plugin-prefer-arrow": "^1.1.5",
+    "jest": "^24.1.0",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^1.16.4",
+    "rimraf": "^2.6.3",
+    "ts-jest": "^24.0.0",
+    "typescript": "^3.3.3",
+    "typescript-eslint-parser": "^22.0.0"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/peerigon/erroz.git"
+    "url": "git+https://github.com/peerigon/erroz.git"
   },
   "keywords": [
     "error",
-    "stack",
-    "abstract",
-    "api",
-    "http"
+    "code",
+    "http",
+    "template"
   ],
-  "author": "peerigon <developers@peerigon.com>",
-  "license": "MIT",
+  "author": "developers@peerigon.com",
+  "license": "Unlicense",
   "bugs": {
     "url": "https://github.com/peerigon/erroz/issues"
   },
-  "homepage": "https://github.com/peerigon/erroz",
-  "devDependencies": {
-    "chai": "^3.4.1",
-    "mocha": "^2.3.4"
-  }
+  "homepage": "https://github.com/peerigon/erroz#readme"
 }

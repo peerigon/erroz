@@ -1,0 +1,12 @@
+{
+    "extends": [
+        "peerigon/base",
+        "peerigon/typescript",
+        "peerigon/styles/prefer-arrow",
+        "peerigon/styles/prefer-interface"
+    ],
+    "env": {
+        "node": true
+    },
+    "root": true
+}
