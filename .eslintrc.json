@@ -8,5 +8,30 @@
     "env": {
         "node": true
     },
-    "root": true
+    "root": true,
+    "rules": {
+        "arrow-body-style": "off",
+        "arrow-parens": ["error", "as-needed", {
+            "requireForBlockBody": false // reports false positives in TypeScript if the function expression is generic
+        }],
+        "@typescript-eslint/member-delimiter-style": ["error", {
+            "multiline": {
+                "delimiter": "semi",
+                "requireLast": true
+            },
+            "singleline": {
+                "delimiter": "semi",
+                "requireLast": false
+            }
+        }]
+    },
+    "overrides": [
+        {
+            "files": ["*.d.ts"],
+            "rules": {
+                "import/unambiguous": "off", // reports false positives with some TypeScript syntax
+                "import/export": "off" // reports false positives with some TypeScript syntax
+            }
+        }
+    ]
 }
