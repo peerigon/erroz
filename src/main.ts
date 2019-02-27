@@ -23,9 +23,11 @@ const validateOptions = (options: unknown): DefineErrorOptions => {
     if (name === undefined) {
         throw new TypeError("Missing \"name\" property in defineError() options");
     }
+
     if (message === undefined) {
         throw new TypeError("Missing \"message\" property in defineError() options");
     }
+
     if (status === undefined && statusCode !== undefined && statusIsDerivableFromStatusCode(statusCode) === false) {
         throw new TypeError(`Cannot derive status from status code ${statusCode}. When the status code is not 2xx, 4xx or 5xx, you need to specify an explicit status like "success", "fail" or "error".`);
     }
@@ -33,28 +35,36 @@ const validateOptions = (options: unknown): DefineErrorOptions => {
     return options as DefineErrorOptions;
 };
 
-export type CustomErrorClass<MetaData = unknown> = new (data: MetaData) => CustomError<MetaData>;
+// Type checkers need to take any type.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const isCustomError = (anything: any): anything is JSendResponse =>
+    Boolean(anything) &&
+    typeof anything.status === "string" &&
+    typeof anything.code === "string" &&
+    typeof anything.message === "string" &&
+    typeof anything.data === "object";
 
-export interface CustomError<MetaData = unknown> extends Error {
-    code: string;
+export interface CustomErrorClass<MetaData = unknown> {
+    new (data: MetaData): CustomError<MetaData>;
+    matches(anything: unknown): anything is JSendResponse<MetaData>;
+}
+
+export interface CustomError<MetaData = unknown> extends Error, JSendResponse<MetaData> {
     statusCode: number;
-    status: JSendStatus;
-    data: MetaData;
     toJSON: () => JSendResponse<MetaData>;
 }
 
 export const defineError = <MetaData = unknown>(options: DefineErrorOptions<MetaData>): CustomErrorClass<MetaData> => {
-    const {name, message, code, status, statusCode} = validateOptions(options);
+    const validatedOptions = validateOptions(options);
+    const {name, message} = validatedOptions;
+    const {code = dashify(name), statusCode = constants.DEFAULT_STATUS_CODE} = validatedOptions;
+    const {status = deriveStatusFromStatusCode(statusCode)} = validatedOptions;
 
-    return class extends Error implements CustomError<MetaData> {
+    class CustomErrorClass extends Error implements CustomError<MetaData> {
         name = name;
-        code = code === undefined ? dashify(name) : code;
-        statusCode = statusCode === undefined ?
-            constants.DEFAULT_STATUS_CODE :
-            statusCode;
-        status = status === undefined ?
-            deriveStatusFromStatusCode(this.statusCode) :
-            status;
+        code = code;
+        statusCode = statusCode;
+        status = status;
 
         constructor(public data: MetaData) {
             super(typeof message === "string" ? message : message(data));
@@ -70,5 +80,17 @@ export const defineError = <MetaData = unknown>(options: DefineErrorOptions<Meta
             message: this.message,
             data: this.data,
         });
-    };
+
+        static matches = (anything: unknown): anything is JSendResponse<MetaData> => {
+            return isCustomError(anything) &&
+                anything.code === code &&
+                anything.status === status;
+        };
+    }
+
+    // Configure the static .name property of the function explicitly
+    // https://stackoverflow.com/a/46132163
+    Object.defineProperty(CustomErrorClass, "name", {value: name});
+
+    return CustomErrorClass;
 };

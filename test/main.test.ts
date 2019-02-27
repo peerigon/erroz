@@ -7,6 +7,7 @@ describe("defineError", () => {
     type MetaData = typeof baseMetaData;
     type InstanceKeys = Array<keyof CustomError>;
     type JsonKeys = Array<keyof JSendResponse>;
+
     const baseMetaData = {
         some: "meta-data",
     };
@@ -24,11 +25,51 @@ describe("defineError", () => {
     ];
     const jsonKeysToSnapshot: JsonKeys = ["status", "code", "message", "data"];
 
+    const testStaticMatchesMethod = (getClass: () => CustomErrorClass<MetaData>) => {
+        describe("the return value of .matches()", () => {
+            it("is true for error instances", () => {
+                const TestError = getClass();
+                const error = new TestError(baseMetaData);
+
+                expect(TestError.matches(error)).toBe(true);
+            });
+
+            it("is true for the json representation", () => {
+                const TestError = getClass();
+                const error = new TestError(baseMetaData);
+
+                expect(TestError.matches(error.toJSON())).toBe(true);
+            });
+        });
+    };
+
     describe("when called with the minimum set of required arguments", () => {
         let TestError: CustomErrorClass<MetaData>;
 
         beforeEach(() => {
             TestError = defineError(baseOptions);
+        });
+
+        describe("the return value", () => {
+            describe(".name", () => {
+                it("is the name as specified", () => {
+                    expect(TestError.name).toBe("TestError");
+                });
+            });
+
+            describe("the return value of .matches()", () => {
+                it("is true for error instances", () => {
+                    const error = new TestError(baseMetaData);
+
+                    expect(TestError.matches(error)).toBe(true);
+                });
+
+                it("is true for the json representation", () => {
+                    const error = new TestError(baseMetaData);
+
+                    expect(TestError.matches(error.toJSON())).toBe(true);
+                });
+            });
         });
 
         describe("the return value when called with new", () => {
