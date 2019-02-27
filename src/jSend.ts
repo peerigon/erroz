@@ -4,7 +4,7 @@ export enum JSendStatus {
     Error = "error"
 }
 
-export interface JSendResponse<MetaData> {
+export interface JSendResponse<MetaData = unknown> {
     status: JSendStatus;
     code: string;
     message: string;

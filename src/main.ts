@@ -38,6 +38,7 @@ export type CustomErrorClass<MetaData = unknown> = new (data: MetaData) => Custo
 export interface CustomError<MetaData = unknown> extends Error {
     code: string;
     statusCode: number;
+    status: JSendStatus;
     data: MetaData;
     toJSON: () => JSendResponse<MetaData>;
 }
@@ -51,6 +52,9 @@ export const defineError = <MetaData = unknown>(options: DefineErrorOptions<Meta
         statusCode = statusCode === undefined ?
             constants.DEFAULT_STATUS_CODE :
             statusCode;
+        status = status === undefined ?
+            deriveStatusFromStatusCode(this.statusCode) :
+            status;
 
         constructor(public data: MetaData) {
             super(typeof message === "string" ? message : message(data));
@@ -61,7 +65,7 @@ export const defineError = <MetaData = unknown>(options: DefineErrorOptions<Meta
         }
 
         toJSON = (): JSendResponse<MetaData> => ({
-            status: status === undefined ? deriveStatusFromStatusCode(this.statusCode) : status,
+            status: this.status,
             code: this.code,
             message: this.message,
             data: this.data,

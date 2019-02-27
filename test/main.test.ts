@@ -1,17 +1,28 @@
-import {
-    defineError,
-    CustomErrorClass,
-    CustomError,
-} from "../src/main";
+import {basename} from "path";
+import {defineError, CustomErrorClass, CustomError} from "../src/main";
 import {JSendResponse, JSendStatus} from "../src/jSend";
+import {collectSnapshotProps} from "./util/snapshot";
 
 describe("defineError", () => {
     type MetaData = typeof baseMetaData;
-    const baseMetaData = {};
+    type InstanceKeys = Array<keyof CustomError>;
+    type JsonKeys = Array<keyof JSendResponse>;
+    const baseMetaData = {
+        some: "meta-data",
+    };
     const baseOptions = {
         name: "TestError",
         message: "There was an error",
     };
+    const instanceKeysToSnapshot: InstanceKeys = [
+        "name",
+        "message",
+        "code",
+        "statusCode",
+        "status",
+        "data",
+    ];
+    const jsonKeysToSnapshot: JsonKeys = ["status", "code", "message", "data"];
 
     describe("when called with the minimum set of required arguments", () => {
         let TestError: CustomErrorClass<MetaData>;
@@ -31,45 +42,59 @@ describe("defineError", () => {
                 expect(error).toBeInstanceOf(Error);
             });
 
+            describe("." + instanceKeysToSnapshot.join(", ."), () => {
+                it("should match their snapshots", () => {
+                    const propsToSnapshot = collectSnapshotProps(
+                        error,
+                        instanceKeysToSnapshot,
+                    );
+
+                    expect(propsToSnapshot).toMatchInlineSnapshot(`
+Object {
+  "code": "test-error",
+  "data": Object {
+    "some": "meta-data",
+  },
+  "message": "There was an error",
+  "name": "TestError",
+  "status": "error",
+  "statusCode": 500,
+}
+`);
+                });
+            });
+
             describe(".stack", () => {
                 it("does not contain the source location where the error has been created", () => {
-                    expect(error.stack).not.toMatch(
-                        /[/\\]defineError\.ts:/g,
+                    // Using dynamic __filename here to make the test more robust in case the file names are changed
+                    const filename = basename(__filename).replace(
+                        /\.test\.ts$/,
+                        ".ts",
                     );
+
+                    expect(error.stack).not.toMatch(filename);
                 });
             });
 
-            describe(".statusCode", () => {
-                it("is 500", () => {
-                    expect(error.statusCode).toBe(
-                        500,
-                    );
-                });
-            });
-        });
-    });
+            describe("the return value of .toJSON()", () => {
+                describe("." + jsonKeysToSnapshot.join(", ."), () => {
+                    it("should match their snapshots", () => {
+                        const propsToSnapshot = collectSnapshotProps(
+                            error,
+                            jsonKeysToSnapshot as InstanceKeys,
+                        );
 
-    describe('when called with a string as "message"', () => {
-        const options = {
-            ...baseOptions,
-            message: "There was an error",
-        };
-        let TestError: CustomErrorClass<MetaData>;
-
-        beforeEach(() => {
-            TestError = defineError(baseOptions);
-        });
-
-        describe("the return value when called with new", () => {
-            let error: CustomError<MetaData>;
-
-            beforeEach(() => {
-                error = new TestError(baseMetaData);
-            });
-
-            describe(".message", () => {
-                it("is the static message as defined by the options", () => {
-                    expect(error.message).toBe(options.message);
+                        expect(propsToSnapshot).toMatchInlineSnapshot(`
+Object {
+  "code": "test-error",
+  "data": Object {
+    "some": "meta-data",
+  },
+  "message": "There was an error",
+  "status": "error",
+}
+`);
+                    });
                 });
             });
         });
@@ -77,7 +102,11 @@ describe("defineError", () => {
 
     describe('when called with a function as "message"', () => {
         type MetaData = typeof metaData;
-        const metaData = {resource: "User", id: "123"};
+        const metaData = {
+            ...baseMetaData,
+            resource: "User",
+            id: "123",
+        };
         const options = {
             ...baseOptions,
             message: ({resource, id}: MetaData) =>
@@ -96,13 +125,51 @@ describe("defineError", () => {
                 error = new TestError(metaData);
             });
 
-            describe(".message", () => {
-                it("matches the rendered template", () => {
-                    expect(
-                        error.message,
-                    ).toMatchInlineSnapshot(
-                        '"Resource User (123) already exists"',
+            describe("." + instanceKeysToSnapshot.join(", ."), () => {
+                it("should match their snapshots", () => {
+                    const propsToSnapshot = collectSnapshotProps(
+                        error,
+                        instanceKeysToSnapshot,
                     );
+
+                    expect(propsToSnapshot).toMatchInlineSnapshot(`
+Object {
+  "code": "test-error",
+  "data": Object {
+    "id": "123",
+    "resource": "User",
+    "some": "meta-data",
+  },
+  "message": "Resource User (123) already exists",
+  "name": "TestError",
+  "status": "error",
+  "statusCode": 500,
+}
+`);
+                });
+            });
+
+            describe("the return value of .toJSON()", () => {
+                describe("." + jsonKeysToSnapshot.join(", ."), () => {
+                    it("should match their snapshots", () => {
+                        const propsToSnapshot = collectSnapshotProps(
+                            error,
+                            jsonKeysToSnapshot as InstanceKeys,
+                        );
+
+                        expect(propsToSnapshot).toMatchInlineSnapshot(`
+Object {
+  "code": "test-error",
+  "data": Object {
+    "id": "123",
+    "resource": "User",
+    "some": "meta-data",
+  },
+  "message": "Resource User (123) already exists",
+  "status": "error",
+}
+`);
+                    });
                 });
             });
         });
@@ -131,15 +198,17 @@ describe("defineError", () => {
                 let error: CustomError<MetaData>;
 
                 beforeEach(() => {
-                    error = new TestError(
-                        baseMetaData,
-                    );
+                    error = new TestError(baseMetaData);
                 });
 
-                describe(".toJSON()", () => {
-                    let json: JSendResponse<
-                        MetaData
-                    >;
+                describe(".status", () => {
+                    it(`is "${expectedStatus}"`, () => {
+                        expect(error.status).toBe(expectedStatus);
+                    });
+                });
+
+                describe("the return value of .toJSON()", () => {
+                    let json: JSendResponse<MetaData>;
 
                     beforeEach(() => {
                         json = error.toJSON();
@@ -147,93 +216,46 @@ describe("defineError", () => {
 
                     describe(".status", () => {
                         it(`is "${expectedStatus}"`, () => {
-                            expect(
-                                json.status,
-                            ).toBe(
-                                expectedStatus,
-                            );
+                            expect(json.status).toBe(expectedStatus);
                         });
-                    });
-                });
-            });
-        });
-
-        [0, 100, 199, 300, 399, 600].forEach(statusCode => {
-            describe(`when called with ${statusCode} as "statusCode"`, () => {
-                const options = {
-                    ...baseOptions,
-                    statusCode,
-                };
-
-                describe("and no explicit status", () => {
-                    it("throws a helpful error", () => {
-                        let thrownError;
-
-                        try {
-                            defineError(options);
-                        } catch (error) {
-                            thrownError = error;
-                        }
-
-                        expect(
-                            thrownError.message,
-                        ).toBe(
-                            `Cannot derive status from status code ${statusCode}. When the status code is not 2xx, 4xx or 5xx, you need to specify an explicit status like "success", "fail" or "error".`,
-                        );
                     });
                 });
             });
         });
     });
 
-    describe("when called with no error code", () => {
-        Object.entries({
-            Error: "error",
-            CustomError: "custom-error",
-            AnotherCustomError: "another-custom-error",
-            ÖtherError: "öther-error",
-        }).forEach(([name, expectedCode]) => {
-            let TestError: CustomErrorClass<MetaData>;
+    [0, 100, 199, 300, 399, 600].forEach(statusCode => {
+        describe(`when called with ${statusCode} as "statusCode"`, () => {
+            const options = {
+                ...baseOptions,
+                statusCode,
+            };
 
-            beforeEach(() => {
-                TestError = defineError({
-                    ...baseOptions,
-                    name,
-                });
-            });
+            describe("and no explicit status", () => {
+                it("throws a helpful error", () => {
+                    let thrownError;
 
-            describe("the return value when called with new", () => {
-                let error: CustomError<MetaData>;
+                    try {
+                        defineError(options);
+                    } catch (error) {
+                        thrownError = error;
+                    }
 
-                beforeEach(() => {
-                    error = new TestError(
-                        baseMetaData,
+                    expect(thrownError.message).toBe(
+                        `Cannot derive status from status code ${statusCode}. When the status code is not 2xx, 4xx or 5xx, you need to specify an explicit status like "success", "fail" or "error".`,
                     );
                 });
-
-                describe(".toJSON()", () => {
-                    let json: JSendResponse<MetaData>;
-
-                    beforeEach(() => {
-                        json = error.toJSON();
-                    });
-
-                    describe(".code", () => {
-                        it(`has been derived from the name (${name})`, () => {
-                            expect(json.code).toBe(expectedCode);
-                        });
-                    });
-                });
             });
         });
     });
 
-    describe("when called with explicit status and statusCode", () => {
+    describe("when called with explicit code, status and statusCode", () => {
         let TestError: CustomErrorClass<MetaData>;
 
         beforeEach(() => {
             TestError = defineError({
                 ...baseOptions,
+                code: "explicit-error-code",
                 status: JSendStatus.Success,
                 statusCode: 600,
             });
@@ -246,17 +268,46 @@ describe("defineError", () => {
                 error = new TestError(baseMetaData);
             });
 
-            describe(".toJSON()", () => {
-                let json: JSendResponse<MetaData>;
+            describe("." + instanceKeysToSnapshot.join(", ."), () => {
+                it("should match their snapshots", () => {
+                    const propsToSnapshot = collectSnapshotProps(
+                        error,
+                        instanceKeysToSnapshot,
+                    );
 
-                beforeEach(() => {
-                    json = error.toJSON();
+                    expect(propsToSnapshot).toMatchInlineSnapshot(`
+Object {
+  "code": "explicit-error-code",
+  "data": Object {
+    "some": "meta-data",
+  },
+  "message": "There was an error",
+  "name": "TestError",
+  "status": "success",
+  "statusCode": 600,
+}
+`);
                 });
+            });
 
-                // TODO: continue here
-                describe(".code", () => {
-                    it(`is the explicit value`, () => {
-                        expect(json.code).toBe(expectedCode);
+            describe("the return value of .toJSON()", () => {
+                describe("." + jsonKeysToSnapshot.join(", ."), () => {
+                    it("should match their snapshots", () => {
+                        const propsToSnapshot = collectSnapshotProps(
+                            error,
+                            jsonKeysToSnapshot as InstanceKeys,
+                        );
+
+                        expect(propsToSnapshot).toMatchInlineSnapshot(`
+Object {
+  "code": "explicit-error-code",
+  "data": Object {
+    "some": "meta-data",
+  },
+  "message": "There was an error",
+  "status": "success",
+}
+`);
                     });
                 });
             });
