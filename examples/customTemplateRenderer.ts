@@ -1,20 +1,17 @@
-'use strict';
+import { erroz } from "../src/main";
 
-var erroz = require("../lib/index.js");
+erroz.options.renderMessage = (template, data) => {
+  template = template.replace("%resource", data.resource?.toString() ?? "");
+  template = template.replace("%id", data.id?.toString() ?? "");
 
-erroz.options.renderMessage = function(template, data) {
-    template = template.replace("%resource", data.resource);
-    template = template.replace("%id", data.id);
-
-    return "Something went wrong... " + template;
+  return "Something went wrong... " + template;
 };
 
 var NotFoundError = erroz({
-    name: "NotFound",
-    code: "not-found",
-    status: "fail",
-    statusCode: 404,
-    template: "%resource (%id) not found"
+  name: "NotFound",
+  code: "not-found",
+  statusCode: 404,
+  template: "%resource (%id) not found",
 });
 
 throw new NotFoundError({ resource: "User", id: 1 });

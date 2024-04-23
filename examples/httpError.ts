@@ -1,23 +1,21 @@
-"use strict";
-
-var http = require("http"),
-    erroz = require("../lib/index.js");
+import http from "http";
+import { erroz } from "../src/main";
 
 var NotFoundError = erroz({
-    name: "NotFound",
-    code: "not-found",
-    status: "fail",
-    statusCode: 404,
-    template: "<%= resource %> (<%= id %>) not found"
+  name: "NotFound",
+  code: "not-found",
+  statusCode: 404,
+  template: "%resource (%id) not found",
 });
 
-http.createServer(function (req, res) {
-
+http
+  .createServer(function (req, res) {
     var err = new NotFoundError({ resource: "User", id: 1 });
 
-    res.writeHead(err.statusCode, {"Content-Type": "application/json"});
+    res.writeHead(err.statusCode, { "Content-Type": "application/json" });
 
     res.end(JSON.stringify(err.toJSend()));
+
     //returns jsend-style JSON
     /*
      {
@@ -37,7 +35,6 @@ http.createServer(function (req, res) {
             }
      }
      */
-
-
-}).listen(1337, "127.0.0.1");
+  })
+  .listen(1337, "127.0.0.1");
 console.log("Server running at http://127.0.0.1:1337/");
