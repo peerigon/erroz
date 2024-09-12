@@ -1,13 +1,10 @@
-'use strict';
-
-var erroz = require("../lib/index.js");
+import { erroz } from "../src/main";
 
 var DuplicateError = erroz({
-    name: "Duplicate",
-    code: "duplicate",
-    status: "fail",
-    statusCode: 409,
-    message: "Resource already exists"
+  name: "Duplicate",
+  code: "duplicate",
+  statusCode: 409,
+  message: "Resource already exists",
 });
 
 throw new DuplicateError();

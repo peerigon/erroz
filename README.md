@@ -6,7 +6,9 @@ Descriptive errors through metadata
 [![](https://img.shields.io/npm/v/erroz.svg)](https://www.npmjs.com/package/erroz)
 [![](https://img.shields.io/npm/dm/erroz.svg)](https://www.npmjs.com/package/erroz)
 
-Typical strategies of parsing errors are fragile and couple code to the error messages. By defining error objects consistently, working with errors becomes predictable and efficient.
+Typical strategies of parsing errors are fragile and couple code to the error
+messages. By defining error objects consistently, working with errors becomes
+predictable and efficient.
 
 ## Features
 
@@ -18,13 +20,13 @@ Typical strategies of parsing errors are fragile and couple code to the error me
 ## Example
 
 ```javascript
-var erroz = require("erroz");
+import { erroz } from "erroz";
 
-var DuplicateError = erroz({
-    name: "Duplicate",
-    code: "duplicate",
-    statusCode: 409,
-    template: "Resource %resource (%id) already exists"
+const DuplicateError = erroz({
+  name: "Duplicate",
+  code: "duplicate",
+  statusCode: 409,
+  template: "Resource %resource (%id) already exists",
 });
 
 // ...
@@ -53,17 +55,19 @@ throw new DuplicateError({ resource: "Unicorn", id: 1 });
 ## Defining errors
 
 ```javascript
-var errorDefinition = {
-    name: "NotFound",
-    template: "%resource (%id) not found"
+const errorDefinition = {
+  name: "NotFound",
+  template: "%resource (%id) not found",
 };
 
-var NotFoundError = erroz(errorDefinition);
+const NotFoundError = erroz(errorDefinition);
 ```
 
 ### errorDefinition _object_
 
-Arbitrary data structure for metadata which will be available on every error instance. Some attributes have a special meaning which is why they are described below: 
+Arbitrary data structure for metadata which will be available on every error
+instance. Some attributes have a special meaning which is why they are described
+below:
 
 #### `name` _string_
 
@@ -75,38 +79,44 @@ A static error message.
 
 #### `template` _string_
 
-A dynamic error message. Variable substitution from [the data object](https://github.com/peerigon/erroz#throwing-with-data-object) is done with `%<variable name>`.
+A dynamic error message. Variable substitution from
+[the data object](https://github.com/peerigon/erroz#throwing-with-data-object)
+is done with `%<variable name>`.
 
 ## Throwing (with data object)
 
 ```javascript
-var data = { resource: "Unicorn", id: 1 };
+const data = { resource: "Unicorn", id: 1 };
 throw new NotFoundError(data);
 // Duplicate: Resource Unicorn (1) already exists
 ```
 
 ### data _object_
 
-A set of data to be used with [the `errorDefinition.template` property](https://github.com/peerigon/erroz#template-string).
+A set of data to be used with
+[the `errorDefinition.template` property](https://github.com/peerigon/erroz#template-string).
 
 ## Throwing (with error message)
 
 ```javascript
-var overrideMessage = "You are not authorized to eat my cookies";
+const overrideMessage = "You are not authorized to eat my cookies";
+
 throw new ForbiddenError(overrideMessage);
 // Forbidden: You are not authorized to eat my cookies
 ```
 
 ### overrideMessage _string_
 
-A message to override `errorDefinition.message` or `errorDefinition.template`. Use of this option will set `error.data` to an empty object.
+A message to override `errorDefinition.message` or `errorDefinition.template`.
+Use of this option will set `error.data` to an empty object.
 
 ## JSON
 
-Errors can be converted to JSON with `JSON.stringify()`. 
+Errors can be converted to JSON with `JSON.stringify()`.
 
-```javascript 
-var err = new DuplicateError({ resource: "Unicorn", id: 1 });
+```javascript
+const err = new DuplicateError({ resource: "Unicorn", id: 1 });
+
 console.log(JSON.stringify(err));
 
 /*
@@ -125,20 +135,24 @@ console.log(JSON.stringify(err));
  */
 ```
 
-__Custom JSON format__ 
+**Custom JSON format**
 
-The `AbstractError.toJSON` method can be defined to customize the JSON format.
+The `options.toJSON` method can be defined to customize the JSON format.
 
 ```javascript
+import { erroz } from "erroz";
+
 // Set a custom `toJSON` method for all errors
-erroz.AbstractError.prototype.toJSON = function() {
-    return {
-        name: this.name,
-        code: this.code
-    };
+erroz.options.toJSON = function () {
+  return {
+    name: this.name,
+    code: this.code,
+  };
 };
 
-console.log(JSON.stringify(err));
+const DuplicateError = erroz(errorConfig);
+
+console.log(JSON.stringify(new DuplicateError()));
 /*
  {
     "name": "Duplicate",
@@ -146,15 +160,15 @@ console.log(JSON.stringify(err));
  }
  */
 ```
- 
+
 ### `error.toJSend()`
 
-Converts the error to a JSend-style object.
-The JSend `status` attribute is derived from the statusCode if not passed explicitly. Valid codes are 4xx and 5xx. 
-In case of an invalid statusCode, `.toJSend()` will throw an error. 
- 
+Converts the error to a JSend-style object. The JSend `status` attribute is
+derived from the statusCode if not passed explicitly. Valid codes are 4xx and
+5xx. In case of an invalid statusCode, `.toJSend()` will throw an error.
+
 ```javascript
-var err = new DuplicateError({ resource: "Unicorn", id: 1, status: 409 });
+const err = new DuplicateError({ resource: "Unicorn", id: 1, status: 409 });
 
 err.toJSend();
 
@@ -178,17 +192,17 @@ err.toJSend();
 
 Define a custom error renderer.
 
-```javascript 
-erroz.options.renderMessage = function(data, template) {
-    return "Ooops";
-}
+```javascript
+erroz.options.renderMessage = function (data, template) {
+  return "Ooops";
+};
 ```
 
 ### includeStack _boolean_
 
 Whether the stack should be included in errors. Default is true.
 
-```javascript 
+```javascript
 erroz.options.includeStack = false;
 ```
 
@@ -196,33 +210,34 @@ Consider turning this off in production and sending it to a logger instead.
 
 ## Pro Tip: Using erroz with Connect / Express error handlers
 
-Define a global error handler which calls `toJSend()` if the error is an instance of `erroz.AbstractError`. 
-**why do this?** So you can simply `next` all your errors in your route-handlers.
+Define a global error handler which calls `toJSend()` if the error is an
+instance of `erroz.AbstractError`. **why do this?** So you can simply `next` all
+your errors in your route-handlers.
 
 ```javascript
 function myAwesomeRoute(req, res, next) {
-    if (!req.awesome) {
-        next(new NotAwesomeError()); 
-        return; 
-    }
+  if (!req.awesome) {
+    next(new NotAwesomeError());
+    return;
+  }
 
-    next();
-}	
+  next();
+}
 ```
 
 ```javascript
 app.use(function errozHandler(err, req, res, next) {
-    if (err instanceof erroz.AbstractError) {
-        res.status(err.statusCode).send(err.toJSend()); 
-        return; 
-    } 
+  if (err instanceof erroz.AbstractError) {
+    res.status(err.statusCode).send(err.toJSend());
+    return;
+  }
 
-    // Pass on all non-erroz errors
-    next(err);
+  // Pass on all non-erroz errors
+  next(err);
 });
 ```
 
-## Licence 
+## Licence
 
 MIT
 

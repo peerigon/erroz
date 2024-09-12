@@ -1,13 +1,10 @@
-'use strict';
-
-var erroz = require("../lib/index.js");
+import { erroz } from "../src/main";
 
 var NotFoundError = erroz({
-    name: "NotFound",
-    code: "not-found",
-    status: "fail",
-    statusCode: 404,
-    template: "%resource (%id) not found"
+  name: "NotFound",
+  code: "not-found",
+  statusCode: 404,
+  template: "%resource (%id) not found",
 });
 
 throw new NotFoundError({ resource: "User", id: 1 });
