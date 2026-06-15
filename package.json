@@ -4,6 +4,14 @@
   "description": "Create abstract errors with meta-data, stack-traces and speaking error-messages",
   "main": "dist/erroz.umd.js",
   "module": "dist/erroz.mjs",
+  "types": "dist/main.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/main.d.ts",
+      "import": "./dist/erroz.mjs",
+      "require": "./dist/erroz.umd.js"
+    }
+  },
   "files": [
     "dist"
   ],
@@ -11,8 +19,10 @@
     "example": "examples"
   },
   "scripts": {
-    "build": "vite build",
-    "prepublishOnly": "vite build",
+    "build": "vite build && npm run build:types",
+    "build:types": "tsc -p tsconfig.build.json",
+    "prepack": "npm run build",
+    "prepublishOnly": "npm test",
     "test": "jest",
     "test:watch": "jest --watch"
   },

@@ -5,6 +5,17 @@ export class AbstractError extends Error {
   constructor(message?: string) {
     super(message);
 
-    Error.captureStackTrace(this, AbstractError);
+    const captureStackTrace = (
+      Error as ErrorConstructor & {
+        captureStackTrace?: (
+          targetObject: object,
+          constructorOpt?: Function,
+        ) => void;
+      }
+    ).captureStackTrace;
+
+    if (captureStackTrace) {
+      captureStackTrace(this, AbstractError);
+    }
   }
 }
