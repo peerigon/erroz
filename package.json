@@ -5,13 +5,6 @@
   "main": "dist/erroz.umd.js",
   "module": "dist/erroz.mjs",
   "types": "dist/main.d.ts",
-  "exports": {
-    ".": {
-      "types": "./dist/main.d.ts",
-      "import": "./dist/erroz.mjs",
-      "require": "./dist/erroz.umd.js"
-    }
-  },
   "files": [
     "dist"
   ],
