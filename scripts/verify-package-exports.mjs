@@ -1,4 +1,7 @@
 import { spawnSync } from "node:child_process";
+import { fileURLToPath } from "node:url";
+
+const packageRoot = fileURLToPath(new URL("..", import.meta.url));
 
 const checks = [
   {
@@ -20,7 +23,7 @@ const checks = [
 
 for (const check of checks) {
   const result = spawnSync(process.execPath, check.args, {
-    cwd: new URL("..", import.meta.url),
+    cwd: packageRoot,
     stdio: "inherit",
   });
 
