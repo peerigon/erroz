@@ -1,10 +1,20 @@
 {
   "name": "erroz",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Create abstract errors with meta-data, stack-traces and speaking error-messages",
   "main": "dist/erroz.umd.js",
   "module": "dist/erroz.mjs",
   "types": "dist/main.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/main.d.ts",
+      "import": "./dist/erroz.mjs",
+      "require": "./dist/erroz.umd.js",
+      "default": "./dist/erroz.mjs"
+    },
+    "./package.json": "./package.json",
+    "./dist/*": "./dist/*"
+  },
   "files": [
     "dist"
   ],
@@ -16,7 +26,8 @@
     "build:types": "tsc -p tsconfig.build.json",
     "prepack": "npm run build",
     "prepublishOnly": "npm test",
-    "test": "jest",
+    "test": "jest && npm run test:exports",
+    "test:exports": "npm run build && node scripts/verify-package-exports.mjs",
     "test:watch": "jest --watch"
   },
   "repository": {

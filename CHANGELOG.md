@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.0.2
+
+- Add package exports map so native Node ESM resolves named exports correctly
+
 ## 2.0.1
 
 - Publish TypeScript type definitions (`types` field in `package.json`)
