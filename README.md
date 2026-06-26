@@ -2,9 +2,9 @@
 
 Descriptive errors through metadata
 
-[![Build Status](https://travis-ci.org/peerigon/erroz.svg?branch=master)](https://travis-ci.org/peerigon/erroz)
-[![](https://img.shields.io/npm/v/erroz.svg)](https://www.npmjs.com/package/erroz)
-[![](https://img.shields.io/npm/dm/erroz.svg)](https://www.npmjs.com/package/erroz)
+[![Version on NPM](https://img.shields.io/npm/v/erroz?style=for-the-badge)](https://www.npmjs.com/package/erroz)
+[![Monthly downloads on NPM](https://img.shields.io/npm/dm/erroz?style=for-the-badge)](https://www.npmjs.com/package/erroz)
+[![License](https://img.shields.io/npm/l/erroz?style=for-the-badge)](./LICENSE)
 
 Typical strategies of parsing errors are fragile and couple code to the error
 messages. By defining error objects consistently, working with errors becomes
@@ -236,6 +236,19 @@ app.use(function errozHandler(err, req, res, next) {
   next(err);
 });
 ```
+
+## Development
+
+This project uses npm scripts for all development tasks:
+
+- **Test all**: `npm test` - Runs format, lint, type and unit checks in parallel
+- **Unit tests**: `npm run test:unit` - Run Vitest tests once
+- **Watch tests**: `npm run vitest` - Run Vitest in watch mode
+- **Lint**: `npm run test:lint` - ESLint with zero warnings allowed
+- **Type check**: `npm run test:types` - TypeScript compiler check
+- **Format check**: `npm run test:format` - Prettier format validation
+- **Build**: `npm run build` - Clears `dist` and compiles with `tsc`
+- **Release**: `npm run release` - Publish via semantic-release
 
 ## Licence
 

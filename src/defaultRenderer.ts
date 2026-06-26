@@ -1,7 +1,7 @@
-import { ErrorData } from "./main";
+import { type ErrorData } from "./main.ts";
 
 export const defaultRenderer = (template: string, data: ErrorData) => {
-  return template.replace(/%\w+/g, (match) => {
+  return template.replaceAll(/%\w+/g, (match) => {
     const d = data[match.slice(1)];
 
     if (d === undefined) {

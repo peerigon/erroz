@@ -1,4 +1,4 @@
-import { Status } from "./main";
+import { type Status } from "./main.ts";
 
 export const deriveStatusFromStatusCode = (statusCode: number): Status => {
   if (statusCode >= 200 && statusCode < 300) {

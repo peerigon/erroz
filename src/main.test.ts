@@ -1,4 +1,5 @@
-import { ErrorConfig, Erroz, erroz } from "../src/main";
+import { beforeEach, describe, expect, it } from "vitest";
+import { erroz, type ErrorConfig } from "./main.ts";
 
 const errorConfig: ErrorConfig = {
   name: "some-name",
@@ -8,7 +9,7 @@ const errorConfig: ErrorConfig = {
 
 const ogOptions = { ...erroz.options };
 
-describe("erroz", function () {
+describe("erroz", () => {
   let CustomError: ReturnType<typeof erroz>;
   let error: InstanceType<typeof CustomError>;
 
@@ -18,8 +19,8 @@ describe("erroz", function () {
     error = new CustomError();
   });
 
-  describe("Attributes", function () {
-    it("should expose all attributes", function () {
+  describe("Attributes", () => {
+    it("should expose all attributes", () => {
       CustomError = erroz({
         name: "some-name",
         code: "some-code",
@@ -33,7 +34,7 @@ describe("erroz", function () {
       expect(CustomError.code).toEqual("some-code");
     });
 
-    it("should be able to modify attributes via instance", function () {
+    it("should be able to modify attributes via instance", () => {
       error = new CustomError();
 
       expect(error.statusCode).toEqual(400);
@@ -43,7 +44,7 @@ describe("erroz", function () {
       expect(error.statusCode).toEqual(200);
     });
 
-    it("should be able to modify attributes via static property", function () {
+    it("should be able to modify attributes via static property", () => {
       CustomError.statusCode = 404;
 
       error = new CustomError();
@@ -52,8 +53,8 @@ describe("erroz", function () {
     });
   });
 
-  describe("template rendering", function () {
-    it("should use message if defined", function () {
+  describe("template rendering", () => {
+    it("should use message if defined", () => {
       CustomError = erroz({
         name: "some-name",
         message: "some-message",
@@ -67,7 +68,7 @@ describe("erroz", function () {
       expect(error.message).toEqual(error.message);
     });
 
-    it("should use template if defined and render with data", function () {
+    it("should use template if defined and render with data", () => {
       CustomError = erroz({
         name: "some-name",
         message: "some-message",
@@ -83,7 +84,7 @@ describe("erroz", function () {
       expect(error.message).toEqual("some-template fluffy");
     });
 
-    it("should use template if defined and accept data to be undefined", function () {
+    it("should use template if defined and accept data to be undefined", () => {
       CustomError = erroz({
         name: "some-name",
         message: "some-message",
@@ -97,7 +98,7 @@ describe("erroz", function () {
       expect(error.message).toEqual("yeha undefined");
     });
 
-    it("should not throw if neither template nor message are defined", function () {
+    it("should not throw if neither template nor message are defined", () => {
       CustomError = erroz({
         name: "some-name",
         message: "some-message",
@@ -110,7 +111,7 @@ describe("erroz", function () {
       expect(error.code).toEqual(error.code);
     });
 
-    it("should use a given string as message", function () {
+    it("should use a given string as message", () => {
       CustomError = erroz({
         name: "some-name",
         message: "some-message",
@@ -124,7 +125,7 @@ describe("erroz", function () {
       expect(error.message).toEqual("Not my fault");
     });
 
-    it("should overwrite the default message if an error message as string was passed", function () {
+    it("should overwrite the default message if an error message as string was passed", () => {
       CustomError = erroz({
         name: "some-name",
         statusCode: 210,
@@ -139,8 +140,8 @@ describe("erroz", function () {
     });
   });
 
-  describe("#toJSON", function () {
-    it("should contain all custom properties", function () {
+  describe("#toJSON", () => {
+    it("should contain all custom properties", () => {
       error = new CustomError();
 
       const jsonified = JSON.stringify(error);
@@ -154,7 +155,7 @@ describe("erroz", function () {
       });
     });
 
-    it("custom toJSON", function () {
+    it("custom toJSON", () => {
       erroz.options.toJSON = function () {
         return {
           name: this.name,
@@ -171,41 +172,37 @@ describe("erroz", function () {
     });
   });
 
-  describe("#toJSend", function () {
-    it("should expose only JSend compatible keys", function () {
+  describe("#toJSend", () => {
+    it("should expose only JSend compatible keys", () => {
       ["status", "message", "code", "data"].forEach((key) => {
         expect(Object.keys(error.toJSend())).toContain(key);
       });
     });
 
-    it("should return status = 'success' if statusCode is 2xx", function () {
+    it("should return status = 'success' if statusCode is 2xx", () => {
       error.statusCode = 201;
 
       expect(error.toJSend().status).toEqual("success");
     });
 
-    it("should return status = 'fail' if statusCode is 4xx", function () {
+    it("should return status = 'fail' if statusCode is 4xx", () => {
       error.statusCode = 404;
 
       expect(error.toJSend().status).toEqual("fail");
     });
 
-    it("should return status = 'error' if statusCode is 5xx", function () {
+    it("should return status = 'error' if statusCode is 5xx", () => {
       error.statusCode = 500;
 
       expect(error.toJSend().status).toEqual("error");
     });
 
-    it("should throw an error if the statusCode is not valid for jSend", function () {
-      try {
-        error.statusCode = 301;
+    it("should throw an error if the statusCode is not valid for jSend", () => {
+      error.statusCode = 301;
 
-        error.toJSend();
-      } catch (error) {
-        expect((error as Erroz).message).toEqual(
-          "JSend only supports 2xx, 4xx and 5xx as status code"
-        );
-      }
+      expect(() => error.toJSend()).toThrow(
+        "JSend only supports 2xx, 4xx and 5xx as status code",
+      );
     });
   });
 
@@ -213,10 +210,37 @@ describe("erroz", function () {
     it("should allow global template definition", () => {
       erroz.options.renderMessage = () => "overriden from options";
 
-      const CustomError = erroz({ ...errorConfig, template: "some-template" });
-      const error = new CustomError({ key: "value" });
+      const TemplateError = erroz({
+        ...errorConfig,
+        template: "some-template",
+      });
+      const templateError = new TemplateError({ key: "value" });
 
-      expect(error.message).toEqual("overriden from options");
+      expect(templateError.message).toEqual("overriden from options");
+    });
+  });
+
+  describe("stack trace", () => {
+    it("should expose the call site without leaking the AbstractError frame", () => {
+      const createErrorAtKnownSite = () => new CustomError();
+
+      const { stack } = createErrorAtKnownSite();
+
+      // `Error.prototype.stack` is non-standard; only assert when the engine
+      // provides it (it does on V8, SpiderMonkey and JavaScriptCore).
+      if (stack === undefined) {
+        return;
+      }
+
+      // The call site must be discoverable in the trace regardless of the
+      // engine's stack format.
+      expect(stack).toContain("createErrorAtKnownSite");
+
+      // The AbstractError base constructor frame must never leak into the
+      // trace. On V8 this is what `Error.captureStackTrace(this, AbstractError)`
+      // guarantees; on engines using a different stack format the V8-style
+      // frame simply never appears, so the assertion stays valid.
+      expect(stack).not.toMatch(/\bat new AbstractError\b/);
     });
   });
 });

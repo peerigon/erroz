@@ -1,18 +1,15 @@
-import { resolve } from "path";
-import { defineConfig } from "vite";
+import { loadEnv } from "vite";
+import { defineConfig } from "vitest/config";
 
-export default defineConfig({
-  build: {
-    lib: {
-      entry: resolve(__dirname, "src/main.ts"),
-      name: "erroz",
-      fileName: "erroz",
-    },
-    rollupOptions: {
-      external: [],
-      output: {
-        globals: {},
-      },
+const CI = process.env["CI"] === "true";
+
+export default defineConfig(({ mode }) => ({
+  test: {
+    env: loadEnv(mode, import.meta.dirname, ""),
+    coverage: {
+      enabled: CI,
+      reporter: ["html", "lcov"],
+      include: ["src/**/*.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"],
     },
   },
-});
+}));
