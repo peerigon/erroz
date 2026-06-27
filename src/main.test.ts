@@ -158,6 +158,7 @@ describe("erroz", () => {
     it("custom toJSON", () => {
       erroz.options.toJSON = function () {
         return {
+          // eslint-disable-next-line unicorn/no-this-outside-of-class -- bound to error instance in constructor
           name: this.name,
         };
       };

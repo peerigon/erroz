@@ -17,7 +17,7 @@ export type ErrorData = Record<
 export type ErrozOptions = {
   renderMessage: (template: string, data: ErrorData) => string;
   includeStack: boolean;
-  toJSON: (this: Erroz) => any;
+  toJSON?: (this: Erroz) => any;
 };
 
 export type Status = "success" | "fail" | "error";
@@ -79,7 +79,9 @@ const makeError = (errorConfig: ErrorConfig): ErrozConstructor => {
 
       this.statusCode = Erroz.statusCode;
       this.code = Erroz.code;
-      this.toJSON = erroz.options.toJSON.bind(this);
+      this.toJSON = erroz.options.toJSON
+        ? erroz.options.toJSON.bind(this)
+        : () => this;
     }
 
     toJSend(): JSend {
@@ -112,7 +114,4 @@ export { AbstractError } from "./AbstractError.ts";
 erroz.options = {
   renderMessage: defaultRenderer,
   includeStack: true,
-  toJSON() {
-    return this;
-  },
 };
