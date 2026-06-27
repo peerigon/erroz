@@ -36,6 +36,7 @@
     "test:lint": "eslint --max-warnings 0 --cache .",
     "test:types": "tsc",
     "test:unit": "vitest --run",
+    "test:publishable": "verify-publishable",
     "test:jsr": "jsr publish --dry-run --allow-dirty",
     "vitest": "vitest",
     "build": "run-s build:*",
